@@ -1,0 +1,2 @@
+#cmakedefine APP_NAME "@APP_NAME@"
+#cmakedefine APP_VERSION "@APP_VERSION@"
