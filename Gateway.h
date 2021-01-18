@@ -9,18 +9,22 @@
 
 #include "httplib.h"
 using HttpServer = httplib::Server;
+using HttpRequest = httplib::Request;
+using HttpResponse =httplib::Response;
 
 class Config;
 
 class Gateway
 {
   public:
-    explicit Gateway(Config *config);
+    explicit Gateway(Config &config);
     ~Gateway();
 
   private:
-    Config *config = nullptr;
-    HttpServer server;
+    void initHttpHandlers();
+
+    Config &config;
+    HttpServer *server;
     std::thread serverThread;
 };
 

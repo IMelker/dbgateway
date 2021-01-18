@@ -33,7 +33,7 @@ int main(int argc, const char* const* argv) {
     std::cout << library_author << std::endl;
     std::cout << depends_on_cpp_version << std::endl;
 
-    Gateway dbGateway(&config);
+    Gateway dbGateway(config);
 
     bool daemon = options.getValue<bool>("daemon");
     while (!SysSignal::serviceTerminated()) {
