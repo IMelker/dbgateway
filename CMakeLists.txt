@@ -25,22 +25,26 @@ endif()
 message("-- Build: ${CMAKE_BUILD_TYPE}")
 
 # third-party libraries
-message("[third-party]")
+message("\n[third-party]")
 add_subdirectory(third-party)
 include_directories(third-party/toml)
 include_directories(third-party/opts/include)
+include_directories(third-party/http)
 
 configure_file(${CMAKE_SOURCE_DIR}/config/app.h.in ${CMAKE_BINARY_DIR}/app.h @ONLY)
 configure_file(${CMAKE_SOURCE_DIR}/config/config.toml.in ${CMAKE_BINARY_DIR}/config.toml @ONLY)
 include_directories(${CMAKE_BINARY_DIR})
 
 # executable configuration
-message("[executable]")
+message("\n[executable]")
 add_executable(dbgateway
         main.cpp
         Gateway.cpp Gateway.h
+        common/SysSignal.cpp common/SysSignal.h
         common/Config.cpp common/Config.h
         common/Options.cpp common/Options.h
         common/Logger.cpp common/Logger.h
-        common/ThreadPool.cpp common/ThreadPool.h)
-link_libraries(dbgateway)
+        common/ThreadPool.cpp common/ThreadPool.h
+        common/HttpUtils.h)
+
+target_link_libraries(dbgateway httplib)
