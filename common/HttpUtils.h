@@ -6,60 +6,13 @@
 #define DBGATEWAY_COMMON_HTTPUTILS_H_
 
 #include "httplib.h"
+#include "spdlog/fmt/ostr.h"
+#include "fmt/format.h"
 
 using HttpHeaders = httplib::Headers;
 using HttpRequest = httplib::Request;
 using HttpResponse = httplib::Response;
 using HttpMultipartFormDataMap = httplib::MultipartFormDataMap;
-
-std::string dump_headers(const HttpHeaders &headers) {
-    std::string s;
-    char buf[BUFSIZ];
-
-    for (const auto &[key, value] : headers) {
-        snprintf(buf, sizeof(buf), "%s: %s\n", key.c_str(), value.c_str());
-        s += buf;
-    }
-
-    return s;
-}
-
-std::string log(const HttpRequest &req, const HttpResponse &res) {
-    std::string s;
-    char buf[BUFSIZ];
-
-    s += "================================\n";
-
-    snprintf(buf, sizeof(buf), "%s %s %s", req.method.c_str(),
-             req.version.c_str(), req.path.c_str());
-    s += buf;
-
-    std::string query;
-    for (auto it = req.params.begin(); it != req.params.end(); ++it) {
-        const auto &x = *it;
-        snprintf(buf, sizeof(buf), "%c%s=%s",
-                 (it == req.params.begin()) ? '?' : '&', x.first.c_str(),
-                 x.second.c_str());
-        query += buf;
-    }
-    snprintf(buf, sizeof(buf), "%s\n", query.c_str());
-    s += buf;
-
-    s += dump_headers(req.headers);
-
-    s += "--------------------------------\n";
-
-    snprintf(buf, sizeof(buf), "%d %s\n", res.status, res.version.c_str());
-    s += buf;
-    s += dump_headers(res.headers);
-    s += "\n";
-
-    if (!res.body.empty()) { s += res.body; }
-
-    s += "\n";
-
-    return s;
-}
 
 std::string dump_multipart_files(const HttpMultipartFormDataMap &files) {
     std::string s;
@@ -88,5 +41,45 @@ std::string dump_multipart_files(const HttpMultipartFormDataMap &files) {
 
     return s;
 }
+
+struct LogHttpQuery : public decltype(HttpRequest::params)
+{
+    template<typename OStream>
+    friend OStream &operator<<(OStream &os, const LogHttpQuery &params) {
+        std::string dump;
+        for (auto &[key, value] : params)
+            dump.append(fmt::format("{}{}={}", dump.empty() ? '?' : '&', key, value));
+        return os << dump;
+    }
+};
+
+struct LogHttpHeaders : public HttpHeaders
+{
+    template<typename OStream>
+    friend OStream &operator<<(OStream &os, const LogHttpHeaders &headers) {
+        std::string dump;
+        for (auto &[key, value] : headers)
+            dump.append(fmt::format("{}: {}\n", key, value));
+        return os << dump;
+    }
+};
+
+struct LogHttpRequest : public HttpRequest
+{
+    template<typename OStream>
+    friend OStream &operator<<(OStream &os, const LogHttpRequest &req) {
+        return os << fmt::format("{} {} {}{}\n{}\n", req.method, req.version, req.path, LogHttpQuery{req.params}, LogHttpHeaders{req.headers})
+                  << (req.body.empty() ? "" : fmt::format("{}\n", req.body));
+    }
+};
+
+struct LogHttpResponse : public HttpResponse
+{
+    template<typename OStream>
+    friend OStream &operator<<(OStream &os, const LogHttpResponse &res) {
+        return os << fmt::format("{} {}\n{}\n", res.status, res.version, LogHttpHeaders{res.headers})
+                  << (res.body.empty() ? "" : fmt::format("{}\n", res.body));
+    }
+};
 
 #endif //DBGATEWAY_COMMON_HTTPUTILS_H_

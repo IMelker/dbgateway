@@ -2,5 +2,12 @@
 name = "toml++"
 authors = ["Mark Gillard <mark.gillard@outlook.com.au>"]
 
-[dependencies]
-cpp = 17
+[dbgateway]
+log_filepath = "logs/dbgateway.log"
+log_level = "trace"
+
+[http]
+log_filepath = "logs/http.log"
+log_level = "trace"
+http_port = 2020
+http_ip = "192.168.74.1"

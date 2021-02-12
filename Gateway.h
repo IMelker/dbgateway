@@ -5,6 +5,7 @@
 #ifndef DBGATEWAY__GATEWAY_H_
 #define DBGATEWAY__GATEWAY_H_
 
+#include <memory>
 #include <thread>
 
 #include "httplib.h"
@@ -13,6 +14,7 @@ using HttpRequest = httplib::Request;
 using HttpResponse =httplib::Response;
 
 class Config;
+class Logger;
 
 class Gateway
 {
@@ -21,10 +23,13 @@ class Gateway
     ~Gateway();
 
   private:
-    void initHttpHandlers();
+    void initHttpControl();
+    void initHttpSql();
 
     Config &config;
-    HttpServer *server;
+    std::unique_ptr<Logger> logger;
+    std::unique_ptr<HttpServer> server;
+    std::unique_ptr<Logger> serverLogger;
     std::thread serverThread;
 };
 

@@ -4,8 +4,8 @@
 
 #include "SysSignal.h"
 
-#include <cstdio>
 #include <csignal>
+#define _POSIX
 #ifdef _POSIX
 #include <sys/wait.h>
 #endif

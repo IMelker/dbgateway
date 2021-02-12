@@ -29,6 +29,7 @@ message("-- Build: ${CMAKE_BUILD_TYPE}")
 # third-party libraries
 message("\n[third-party]")
 add_subdirectory(third-party)
+include_directories(third-party/spdlog/include)
 include_directories(third-party/toml)
 include_directories(third-party/opts/include)
 include_directories(third-party/http)
@@ -45,8 +46,8 @@ add_executable(dbgateway
         common/SysSignal.cpp common/SysSignal.h
         common/Config.cpp common/Config.h
         common/Options.cpp common/Options.h
-        common/Logger.cpp common/Logger.h
+        common/logger/Logger.cpp common/logger/Logger.h
         common/ThreadPool.cpp common/ThreadPool.h
         common/HttpUtils.h)
 
-target_link_libraries(dbgateway httplib)
+target_link_libraries(dbgateway httplib spdlog stdc++fs)

@@ -10,7 +10,7 @@
 #define DEBUG_CONFIG
 #ifdef DEBUG_CONFIG
 #define PRINT(f, ...) printf((f"\n"), ##__VA_ARGS__)
-#elif
+#else
 #define PRINT()
 #endif
 
