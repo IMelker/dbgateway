@@ -1,6 +1,9 @@
 message("- [json]")
 add_subdirectory(json)
 
+message("- [abseil]")
+add_subdirectory(abseil)
+
 message("- [toml]")
 
 # some checkups and settings

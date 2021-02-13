@@ -16,3 +16,6 @@
 [submodule "third-party/http"]
 	path = third-party/http
 	url = https://github.com/yhirose/cpp-httplib.git
+[submodule "third-party/abseil"]
+	path = third-party/abseil
+	url = https://github.com/abseil/abseil-cpp.git

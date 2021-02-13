@@ -11,9 +11,9 @@
 #include "common/SysSignal.h"
 #include "common/Config.h"
 #include "common/Options.h"
-#include "common/logger/Logger.h"
+#include "common/Logger.h"
 
-#include "Gateway.h"
+#include "DBGateway.h"
 
 #ifndef WIN32
 #include <sys/wait.h>
@@ -54,7 +54,7 @@ int main(int argc, const char* const* argv) {
 #endif
 
     Config config{options.getValue<std::string>("config")};
-    Gateway dbGateway(config);
+    DBGateway dbGateway(config);
 
     while (!SysSignal::serviceTerminated()) {
         std::this_thread::sleep_for(std::chrono::seconds{1});

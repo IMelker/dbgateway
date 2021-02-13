@@ -42,12 +42,15 @@ include_directories(${CMAKE_BINARY_DIR})
 message("\n[executable]")
 add_executable(dbgateway
         main.cpp
-        Gateway.cpp Gateway.h
+        DBGateway.cpp DBGateway.h
+        DBProcessor.cpp DBProcessor.h
+        DBConnection.cpp DBConnection.h
         common/SysSignal.cpp common/SysSignal.h
         common/Config.cpp common/Config.h
         common/Options.cpp common/Options.h
-        common/logger/Logger.cpp common/logger/Logger.h
+        common/Logger.cpp common/Logger.h
         common/ThreadPool.cpp common/ThreadPool.h
-        common/HttpUtils.h)
+        common/HttpUtils.h
+        common/StringUtils.h)
 
-target_link_libraries(dbgateway httplib spdlog stdc++fs)
+target_link_libraries(dbgateway httplib spdlog absl::strings stdc++fs)
